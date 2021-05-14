@@ -1,0 +1,10 @@
+#!/bin/sh
+while true
+do
+    scrapy crawl web -s JOBDIR=crawls/webcrawl-1
+    while ! [ -e DB_IS_OK ]
+    do
+        echo "db not ok, waiting to restart..."
+        sleep 5
+    done
+done
