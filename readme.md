@@ -5,7 +5,7 @@ boilerplate and helper scripts.
 
 It's terribly written but it works™, so for right now it's enough.
 
-The spider will crawl in Breadth-first order, and process the first 200 links
+The spider will crawl in breadth-first order, and process the first 200 links
 on any page. The spider will ignore links that:
 - Have the"nofollow" attribute set
 - Are longer than 190 characters
