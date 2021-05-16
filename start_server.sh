@@ -6,7 +6,7 @@ do
     ssdb_pid=$!
     echo "started ssdb server"
     echo "watching db ok file"
-    inotifywait ./DB_IS_OK
+    inotifywait -e delete_self ./DB_IS_OK
     echo "db not ok!!!"
     echo "stopping server..."
     kill -2 $ssdb_pid
