@@ -135,13 +135,13 @@ class WebSpider(scrapy.Spider):
 
         try:
             matches = list(WORDS_RE.finditer(content.lower()))
-            if len(matches) > 5000:
-                matches = matches[:5000]
-            for match in matches:
-                word = match.group().replace("'", "")
-                if not word:
-                    continue
-                if len(bytes(word, 'utf-8')) < 190:
+            words = list(map(lambda x: x.group(), matches))
+            words = list(filter(lambda x: len(x) < 32, words))
+            if len(words) > 5000:
+                words = words[:5000]
+            for word in words:
+                word = word.replace("'", "")
+                if word:
                     db.zincr("w:" + word, redirector_url, 1)
 
             for link_string in link_strings:
