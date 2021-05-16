@@ -134,7 +134,7 @@ class WebSpider(scrapy.Spider):
         word = ""
 
         try:
-            matches = list(set(WORDS_RE.finditer(content.lower())))
+            matches = list(WORDS_RE.finditer(content.lower()))
             if len(matches) > 3000:
                 matches = matches[:3000]
             for match in matches:
