@@ -106,7 +106,19 @@ class WebSpider(scrapy.Spider):
             self.logger.info("url too long, skipping...")
             return
 
-        content = "".join(response.xpath("//text()").getall())
+        page_title = response.xpath("//title//text()").get()
+        if page_title is None:
+            page_title = ""
+        else:
+            page_title = page_title.lower()
+
+        div_content = response.xpath("//div//text()").getall()
+        p_content = response.xpath("//p//text()").getall()
+        script_content = response.xpath("//script//text()").getall()
+
+        content = set(div_content + p_content) - set(script_content)
+        content = " ".join(content).lower()
+
         page_tld = page_url.split("/")[2].split(".")[-1]
         cld_reliable, content_num_bytes, content_details = cld2.detect(content, hintTopLevelDomain=page_tld)
         content_lang = content_details[0][0]
@@ -134,15 +146,28 @@ class WebSpider(scrapy.Spider):
         word = ""
 
         try:
-            matches = list(WORDS_RE.finditer(content.lower()))
-            words = list(map(lambda x: x.group(), matches))
-            words = list(filter(lambda x: len(x) < 32, words))
-            if len(words) > 5000:
-                words = words[:5000]
-            for word in words:
+            title_matches = list(WORDS_RE.finditer(page_title))
+            title_words = list(map(lambda x: x.group(), title_matches))
+            title_words = list(filter(lambda x: len(x) < 32, title_words))
+
+            if len(title_words) > 32:
+                title_words = title_words[:32]
+
+            for word in title_words:
+                word = word.replace("'", "")
+                if word:
+                    db.zincr("t:" + word, redirector_url, 1)
+
+            content_matches = list(WORDS_RE.finditer(content))
+            content_words = list(map(lambda x: x.group(), content_matches))
+            content_words = list(filter(lambda x: len(x) < 32, content_words))
+            if len(content_words) > 5000:
+                content_words = content_words[:5000]
+            for word in content_words:
                 word = word.replace("'", "")
                 if word:
                     db.zincr("w:" + word, redirector_url, 1)
+
 
             for link_string in link_strings:
                 db.zset("r:" + link_string, redirector_url, 0)
