@@ -81,7 +81,7 @@ the truth because they won't understand. The truth is "Because I care about
 you. I care about all of you."
 
 The Affero license is the bitter medicine, the early bedtime, the plate full of
-vegetables you pick at lethargically, in hopes to break your parents will. They
+vegetables you stab at lethargically, in hopes to break your parents will. They
 will not break.
 
 They surround you with vaguenesses: "Because it's good for you", "Because you
@@ -95,7 +95,7 @@ Santa isn't real. Because your goldfish didn't live for 5 years. Because
 reality is diabolical. Because innocence is precious. Because they really did
 love you, after all.
 
-Most people, when asked "Why do you use Affero?" will offer vague answers full
+Most people, when asked "Why do you use Affero?" will offer answers full
 of words like "freedom", "community" and "open source". Sometimes it is because
 they truly belive these things. Often though, like our parents, it is because
 they know that you won't understand right now. They know that maybe you won't
