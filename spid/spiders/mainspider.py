@@ -1,17 +1,15 @@
-import scrapy
-import redis
 import re
 import os
+import scrapy
 import signal
+import pyssdb
 import pycld2 as cld2
 from scrapy.spiders import Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.exceptions import CloseSpider
 from twisted.internet.error import DNSLookupError
 from twisted.internet.error import ConnectionDone
-#import pyssdb
-#db = pyssdb.Client()
-db = redis.Redis("localhost", "8888")
+db = pyssdb.Client()
 seed_sites = ""
 WORDS_RE = re.compile("[a-z']{3,}")
 
@@ -150,27 +148,27 @@ class WebSpider(scrapy.Spider):
                     continue
                 if len(bytes(word, 'utf-8')) < 190:
                     # w = word
-                    db.zincrby("w:" + word, 1, redirector_url)
+                    db.zincr("w:" + word, redirector_url, 1)
 
             for link_string in link_strings:
                 # r = referrer
-                db.zadd("r:" + link_string, {redirector_url: 0})
+                db.zset("r:" + link_string, redirector_url, 0)
 
             # nl = num links on the page
             db.set("nl:" + redirector_url, len(link_strings))
 
             # pr = pageRanks
-            db.zadd("pr", {str(redirector_url): 0})
+            db.zset("pr", redirector_url, 0)
             
-        except redis.exceptions.ResponseError:
-            self.logger.error("<<<<<<<< ERROR WRITING TO REDIS >>>>>>>>>")
+        except pyssdb.error:
+            self.logger.error("<<<<<<<< ERROR WRITING TO SSDB >>>>>>>>>")
             self.logger.info("link string was: \"{}\"".format(link_string))
             self.logger.info("page url was: \"{}\"".format(page_url))
             self.logger.info("word was: \"{}\"".format(word))
             self.logger.error("<<<<<<<< LETS HOPE THE DB ISNT DEAD >>>>>>>>>")
             try:
                 db.set("key", "value")
-            except redis.exceptions.ResponseError:
+            except pyssdb.error:
                 self.logger.error("<<<<<<<< OH GOD THE DB IS DEAD HELP >>>>>>>>>")
                 os.remove(os.getcwd() + "/DB_IS_OK")
                 os.kill(os.getpid(), signal.SIGINT)

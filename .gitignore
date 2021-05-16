@@ -1,0 +1,5 @@
+**/__pycache__/
+ssdb/
+crawls/
+master.zip
+repair.log

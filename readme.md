@@ -20,7 +20,7 @@ Additionally, the spider will not crawl pages that:
 
 # Requirements
 - python3
-- redis
+- pyssdb
 - ssdb
 - scrapy
 - pycld2
