@@ -63,12 +63,7 @@ class WebSpider(scrapy.Spider):
         )
         
     def errback(self, failure):
-        # log all errback failures,
-        # in case you want to do something special for some errors,
-        # you may need the failure's type
-
         request = failure.request
-        #elif isinstance(failure.value, TimeoutError):
         if failure.check(TimeoutError):
             self.logger.error("TimeoutError on {}".format(request.url))
         elif failure.check(DNSLookupError):
@@ -115,6 +110,7 @@ class WebSpider(scrapy.Spider):
         page_tld = page_url.split("/")[2].split(".")[-1]
         cld_reliable, content_num_bytes, content_details = cld2.detect(content, hintTopLevelDomain=page_tld)
         content_lang = content_details[0][0]
+#        if content_lang != "ENGLISH" and cld_reliable:
         if content_lang != "ENGLISH":
             self.logger.info("content in {}, skipping...".format(content_lang.lower()))
             return
@@ -126,7 +122,6 @@ class WebSpider(scrapy.Spider):
         link_strings = list(map(lambda x: x.attrib['href'].strip().replace(" ", "%20"), link_elements))
         if len(link_strings) > 200:
             link_strings = link_strings[:200]
-#        link_strings = list(filter(lambda x: "?" not in x and x != page_url, link_strings))
 
         link_strings = list(filter(lambda x: 
                                     "?" not in x 
@@ -147,17 +142,13 @@ class WebSpider(scrapy.Spider):
                 if not word:
                     continue
                 if len(bytes(word, 'utf-8')) < 190:
-                    # w = word
                     db.zincr("w:" + word, redirector_url, 1)
 
             for link_string in link_strings:
-                # r = referrer
                 db.zset("r:" + link_string, redirector_url, 0)
 
-            # nl = num links on the page
             db.set("nl:" + redirector_url, len(link_strings))
 
-            # pr = pageRanks
             db.zset("pr", redirector_url, 0)
             
         except pyssdb.error:
@@ -173,7 +164,6 @@ class WebSpider(scrapy.Spider):
                 os.remove(os.getcwd() + "/DB_IS_OK")
                 os.kill(os.getpid(), signal.SIGINT)
                 os.kill(os.getpid(), signal.SIGINT)
-                #raise CloseSpider("error writing to db, shutting down...")
             else:
                 self.logger.error("<<<<<<<< PHEW EVERYTHING IS FINE >>>>>>>>>")
 
