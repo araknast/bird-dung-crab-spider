@@ -149,7 +149,7 @@ class WebSpider(scrapy.Spider):
 
             db.set("nl:" + redirector_url, len(link_strings))
 
-            db.zset("pr", redirector_url, 0)
+            db.hset("pr", redirector_url, "0")
             
         except pyssdb.error:
             self.logger.error("<<<<<<<< ERROR WRITING TO SSDB >>>>>>>>>")

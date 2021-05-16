@@ -62,8 +62,8 @@ Each time the spider crawls a website it will do the following:
       the site.
 - The number of links on each website is is stored as an integer value with
   keys in the format `nl:<url>`.
-- The PageRanks for each website are stored in the zset `pr` where each key
-  member is a url and each score is the corresponding PageRank.
+- The PageRanks for each website are stored in the hset `pr` where each key
+  member is a url and each value is the corresponding PageRank.
     - The spider will initialize the PageRank of any new page to 0. Calculation
       should happen after the spider has stopped.
 
