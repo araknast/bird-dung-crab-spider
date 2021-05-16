@@ -135,8 +135,8 @@ class WebSpider(scrapy.Spider):
 
         try:
             matches = list(WORDS_RE.finditer(content.lower()))
-            if len(matches) > 3000:
-                matches = matches[:3000]
+            if len(matches) > 5000:
+                matches = matches[:5000]
             for match in matches:
                 word = match.group().replace("'", "")
                 if not word:
