@@ -71,9 +71,10 @@ Each time the spider crawls a website it will do the following:
       should happen after the spider has stopped.
 
 # Gotchas
-- When parsing a page, only the first 3000 unique words will be processed
+- When parsing a page, only the first 5000  words will be processed
 - Pages that are not crawled but are linked to other pages will still count
-  towards their referrers `nl:` and will also get an `r:` entry.
+  towards their referrers `nl:` and will also get an `r:` entry. They will not
+  get an inverted index entry.
 - The spider will break if the blackist is empty, just blacklist example.com or
 something if you don't want a blacklist.
 - This spider makes a lot of requests very quickly, if you have a weak
