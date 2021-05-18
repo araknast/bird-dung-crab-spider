@@ -3,6 +3,8 @@ This is a spider that crawls the web. The source code for the spider itself is
 located in spid/spiders/mainspider.py, the rest is ssdb code, scrapy
 boilerplate and helper scripts.
 
+This is just a spider. To actually search things you will need [PRtest](https://github.com/araknast/prtest).
+
 It's terribly written but it works™, so for right now it's enough.
 
 The spider will crawl in breadth-first order, and process the first 200 links
