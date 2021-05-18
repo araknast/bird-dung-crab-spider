@@ -9,7 +9,7 @@ The spider will crawl in breadth-first order, and process the first 200 links
 on any page. The spider will ignore links that:
 - Have the"nofollow" attribute set
 - Are longer than 190 characters
-- Link to the same domain
+- Link to the same ~~domain~~ page
 - Contain query strings
 
 Additionally, the spider will not crawl pages that:
@@ -50,20 +50,21 @@ Additionally, the spider will not crawl pages that:
 # Data
 Each time the spider crawls a website it will do the following:
 1. Add an inverted index entry for each word on the site
-2. Add its url to the referrers list for each link on the site
-3. Log the number of links on the page to the db
-4. Add its url to the db
+2. Add its domain to the referrers list for each link on the site
+3. Log the number of total links on the domain to the db
+4. Add its domain name to the db
 
-- The referrers for each website are stored as a zset with keys in the format
-  `r:<url>`.
+- The referrers for each domain are stored as a zset with keys in the format
+  `r:<domain>`.
 - The inverted index for any word is stored as a zset with keys in the format
   `w:<word>`.
+    - Each entry is a full url and *not* a domain name
     - The score for each entry corresponds to the occurrences of that word on
       the site.
-- The number of links on each website is is stored as an integer value with
-  keys in the format `nl:<url>`.
-- The PageRanks for each website are stored in the hset `pr` where each key
-  member is a url and each value is the corresponding PageRank.
+- The number of links on each domain is is stored as an integer value with
+  keys in the format `nl:<domain>`.
+- The PageRanks for each domain are stored in the hset `pr` where each key
+  member is a domain name and each value is the corresponding PageRank.
     - The spider will initialize the PageRank of any new page to 0. Calculation
       should happen after the spider has stopped.
 
@@ -73,6 +74,9 @@ Each time the spider crawls a website it will do the following:
   towards their referrers `nl:` and will also get an `r:` entry.
 - The spider will break if the blackist is empty, just blacklist example.com or
 something if you don't want a blacklist.
+- This spider makes a lot of requests very quickly, if you have a weak
+  DNS server, or weak internet, requests might start failing.  I reccommend
+CloudFlare's `1.1.1.1` DNS.
 
 # License
 Someone asks me "Why do you use the Affero license?", and jokingly, I reply to
